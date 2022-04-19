@@ -145,7 +145,7 @@ def random_erasing(file_path, p=0.5, sl=0.02, sh=0.4, r1=0.3, r2=3.3):
 VGG16・VGG19・Xceptionで精度がVGG16が高かったため採用した。  
 コンペ優勝者はアンサンブル学習を採用していた。
 パラメータの設定で入力画像サイズの高さと幅をもっと大きくしていればより精度が高くなることが分かった。  
-エポック数を多くしすぎると過学習の原因になってしまう。  
+エポック数を多くしすぎると過学習の原因になってしまう。
 ```bash
 IMG_WIDTH, IMG_HEIGHT = 224, 224
 TARGET_SIZE = (IMG_WIDTH, IMG_HEIGHT)
@@ -157,3 +157,54 @@ EPOCHS = 30
 # バッチサイズ
 BATCH_SIZE = 5
 ```
+エポック数30の場合、TrainとValidでロス値が大きくなることが分かる  
+グラフからエポック数5～くらいが適正と判断した。  
+<img src="https://user-images.githubusercontent.com/93046615/163947891-e7de68ef-8a5a-4777-ad27-5fb9d2d80291.png" width="500px"><img src="https://user-images.githubusercontent.com/93046615/163948604-9679ecf9-27af-4a3d-8bae-ae472284a789.png" width="500px">  
+
+作成したモデルでテスト画像を分類する  
+```bash
+# テストデータに対して1つずつ予測し、テストデータのファイル名と判定結果をリストに保存
+file_list = []
+pred_list = []
+for file in glob.glob(test_data_dir + '/*'):
+    image_data = file
+    filename = file.split('/')[-1]
+    img = image.load_img(image_data, target_size=(IMG_WIDTH, IMG_HEIGHT))
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    x = x / 255
+    pred = model.predict(x)[0]
+    judge = np.argmax(pred)
+
+    # *bridge, horn, potatoを不良（'1'）に、regularを良品（'0'）に変換。if文の条件分岐は上の「分類とラベルの対応確認」セルの結果を参考に変更すること*
+    if judge==0:
+        judge=1
+    elif judge==1:
+        judge=1
+    elif judge==2:
+        judge=1
+    else:
+        judge=0
+
+    pred_list.append(judge)
+    file_list.append(filename)
+```
+
+# Note  
+tensorflowはCPUで処理するため学習に時間がかかる、画像枚数が増えれば増えるほどとてつもなく時間がかかる！！  
+tensorflow-gpuで学習させたら処理時間は1/1000になる  
+朝起きて学習開始して帰ってきてもまだ終わってない状況だったのにGPUで処理することで1時間もかからず処理が終わるようになる  
+絶対にGPUでやりましょう  
+
+# Author
+
+* 作成者 KeiichiAdachi
+* 所属 Japan/Aichi
+* E-mail keiichimonoo@gmail.com
+ 
+# License
+なし  
+
+
+
+
