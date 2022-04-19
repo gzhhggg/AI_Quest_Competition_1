@@ -158,7 +158,7 @@ EPOCHS = 30
 BATCH_SIZE = 5
 ```
 エポック数30の場合、TrainとValidでロス値が大きくなることが分かる  
-グラフからエポック数5～くらいが適正と判断した。  
+グラフからエポック数5～10くらいが適正と判断した。  
 <img src="https://user-images.githubusercontent.com/93046615/163947891-e7de68ef-8a5a-4777-ad27-5fb9d2d80291.png" width="500px"><img src="https://user-images.githubusercontent.com/93046615/163948604-9679ecf9-27af-4a3d-8bae-ae472284a789.png" width="500px">  
 
 作成したモデルでテスト画像を分類する  
